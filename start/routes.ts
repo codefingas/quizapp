@@ -25,6 +25,11 @@ Route.get('/', async () => {
   return { hello: 'world' }
 })
 
-Route.get('/quiz', 'QuizController.index')
+Route.resource('quiz', 'QuizzesController.index')
 
-Route.resource('account', 'AccountController').apiOnly()
+// Route.resource('account', 'AccountsController').apiOnly()
+
+Route.group(() => {
+  Route.get('account', 'AccountsController.index')
+  Route.post('account', 'AccountsController.register')
+}).prefix('/api')
