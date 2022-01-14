@@ -1,3 +1,4 @@
+'use strict'
 /*
 |--------------------------------------------------------------------------
 | Routes
@@ -25,4 +26,5 @@ Route.get('/', async () => {
 })
 
 Route.get('/quiz', 'QuizController.index')
-Route.get('/account', 'AccountController.index')
+
+Route.resource('account', 'AccountController').apiOnly()
