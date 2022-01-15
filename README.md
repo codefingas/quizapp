@@ -5,3 +5,5 @@ The challenge is to create a small API for a quiz app where users can create and
 Limitations:
 1. Soft Delete was not implemented.
 2. Pagination was not fully implemented.
+3. jsonwebtoken is outdated and was last published 3 years ago.
+4. JWT logout is not the best implementation and might be open to hackers.

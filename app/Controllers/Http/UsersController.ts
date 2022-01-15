@@ -1,7 +1,10 @@
 'use strict'
+import dotenv from 'dotenv'
+dotenv.config()
 
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Hash from '@ioc:Adonis/Core/Hash'
+import jwt from 'jsonwebtoken'
 
 // Import the user model
 import Users from 'App/Models/Mongoose/User'
@@ -102,6 +105,54 @@ export default class UsersController {
       // Delete a specific user
       await Users.findByIdAndRemove(request.param('id')).exec()
 
+      return response.noContent()
+    } catch (error) {
+      response.badRequest(error.messages)
+    }
+  }
+
+  // Login a user
+  public async login({ request, response }: HttpContextContract) {
+    try {
+      // Validate the user
+      await request.validate({
+        schema: new Utilities().loginUser(),
+        messages: new Utilities().validationMessages(),
+      })
+
+      // Find the user
+      let user = await Users.findOne({
+        email: request.input('email'),
+      }).exec()
+
+      // Check if user exists
+      if (!user) {
+        return response.badRequest({ Error: 'User does not exist.' })
+      }
+
+      // Check if password is correct
+      if (!(await Hash.verify(user.password, String(request.input('password'))))) {
+        return response.badRequest({ Error: 'Password is incorrect.' })
+      }
+
+      // Return the user
+      return response.json({
+        id: user.id,
+        email: user.email,
+        username: user.username,
+        token: jwt.sign(
+          { email: user.email, username: user.username, _id: user._id },
+          process.env.SECRET
+        ),
+      })
+    } catch (error) {
+      response.badRequest(error.messages)
+    }
+  }
+
+  // Logout a user
+  public async logout({ request, response }: HttpContextContract) {
+    try {
       return response.noContent()
     } catch (error) {
       response.badRequest(error.messages)

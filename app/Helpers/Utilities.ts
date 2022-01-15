@@ -53,4 +53,24 @@ export default class Utilities {
       ),
     })
   }
+
+  // Return the validation Schema to be user for User Creation
+  public loginUser() {
+    return schema.create({
+      email: schema.string(
+        {
+          escape: true,
+          trim: true,
+        },
+        [rules.email()]
+      ),
+      password: schema.string(
+        {
+          escape: true,
+          trim: true,
+        },
+        [rules.minLength(5), rules.required()]
+      ),
+    })
+  }
 }
