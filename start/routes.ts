@@ -37,8 +37,10 @@ Route.group(() => {
 }).prefix('/api')
 
 Route.group(() => {
+  Route.get('play', 'QuizzesController.play')
   Route.get('quiz', 'QuizzesController.index')
   Route.post('quiz', 'QuizzesController.create')
+  Route.post('score', 'QuizzesController.score')
   Route.put('quiz/:id', 'QuizzesController.update')
   Route.get('quiz/:id', 'QuizzesController.getByID')
   Route.delete('quiz/:id', 'QuizzesController.delete')

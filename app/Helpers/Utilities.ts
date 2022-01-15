@@ -65,6 +65,26 @@ export default class Utilities {
     })
   }
 
+  // Return the validation Schema to be used marking the answers
+  public validateAnswer() {
+    return schema.create({
+      _id: schema.string(
+        {
+          escape: true,
+          trim: true,
+        },
+        [rules.minLength(3), rules.required()]
+      ),
+      correct_answer: schema.string(
+        {
+          escape: true,
+          trim: true,
+        },
+        [rules.minLength(1), rules.required()]
+      ),
+    })
+  }
+
   // Return the validation Schema to be user for User Creation
   public loginUser() {
     return schema.create({

@@ -2,8 +2,81 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Utilities from 'App/Helpers/Utilities'
 import Quizzes from 'App/Models/Mongoose/Quiz'
+import Scores from 'App/Models/Mongoose/Scoring'
 
 export default class QuizzesController {
+  // Return a list of 5 random questions to the user
+  public async play({ response }: HttpContextContract) {
+    try {
+      // Return a list of 5 random questions to the user
+      let questions = await Quizzes.aggregate([{ $sample: { size: 5 } }]).exec()
+
+      return response.json(questions)
+    } catch (error) {
+      response.badRequest(error)
+    }
+  }
+
+  // Score and save the quiz result in the database
+  public async score({ request, response }: HttpContextContract) {
+    try {
+      // Loop through the supplied answers and check if they match the correct answer
+      let id = ''
+      let correct = 0
+      let answer = ''
+      let existingQuiz
+      let scoring = []
+
+      for (const key in request.all()) {
+        id = request.all()[key]['_id']
+        answer = request.all()[key]['supplied_answer']
+
+        // Get the quiz details from the database
+        existingQuiz = await Quizzes.findById(id).exec()
+
+        // If the quiz already exists, update the score object
+        if (existingQuiz) {
+          if (answer === existingQuiz.correct_answer) {
+            correct++
+            scoring.push({
+              correct: true,
+              question: existingQuiz.question,
+              correct_answer: existingQuiz.correct_answer,
+              supplied_answer: answer,
+              incorrect_answers: existingQuiz.incorrect_answers,
+            })
+          } else {
+            scoring.push({
+              correct: false,
+              question: existingQuiz.question,
+              correct_answer: existingQuiz.correct_answer,
+              supplied_answer: answer,
+              incorrect_answers: existingQuiz.incorrect_answers,
+            })
+          }
+        }
+      }
+
+      const score = new Scores({
+        score: correct,
+        details: scoring,
+        total: scoring.length,
+        created_by: request.user._id,
+        created_at: new Utilities().currentDate(),
+      })
+      await score.save()
+
+      response.status(201).json({
+        score: correct,
+        total: scoring.length,
+        attempted_on: new Utilities().currentDate(),
+        breakdown: scoring,
+      })
+    } catch (error) {
+      response.badRequest(error)
+    }
+  }
+
   // Return the list of all quizzes
   public async index({ request }: HttpContextContract) {
     let limit = request.qs().limit
@@ -24,7 +97,7 @@ export default class QuizzesController {
     try {
       const query = { created_by: request.user._id, _id: request.param('id') }
 
-      // Return the specific user with the given `id`, or `null` if not found
+      // Return the specific quiz with the given `id`, or `null` if not found
       return await Quizzes.findOne(query).exec()
     } catch (error) {
       response.badRequest(error)
