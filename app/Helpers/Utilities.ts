@@ -42,7 +42,7 @@ export default class Utilities {
           escape: true,
           trim: true,
         },
-        [rules.minLength(10), rules.required()]
+        [rules.minLength(5), rules.required()]
       ),
       username: schema.string(
         {

@@ -30,6 +30,9 @@ Route.resource('quiz', 'QuizzesController.index')
 // Route.resource('account', 'AccountsController').apiOnly()
 
 Route.group(() => {
-  Route.get('account', 'AccountsController.index')
-  Route.post('account', 'AccountsController.register')
+  Route.get('user', 'UsersController.index')
+  Route.put('user/:id', 'UsersController.update')
+  Route.post('user', 'UsersController.register')
+  Route.get('user/:id', 'UsersController.getByID')
+  Route.delete('user/:id', 'UsersController.delete')
 }).prefix('/api')
