@@ -100,7 +100,7 @@ export default class UsersController {
   public async delete({ request, response }: HttpContextContract) {
     try {
       // Delete a specific user
-      await Users.findOneAndRemove(request.param('id')).exec()
+      await Users.findByIdAndRemove(request.param('id')).exec()
 
       return response.noContent()
     } catch (error) {
