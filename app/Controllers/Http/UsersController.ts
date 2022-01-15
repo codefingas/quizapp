@@ -5,8 +5,6 @@ dotenv.config()
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Hash from '@ioc:Adonis/Core/Hash'
 import jwt from 'jsonwebtoken'
-
-// Import the user model
 import Users from 'App/Models/Mongoose/User'
 import Utilities from 'App/Helpers/Utilities'
 
@@ -71,7 +69,7 @@ export default class UsersController {
         .status(201)
         .json({ id: savedUser.id, email: savedUser.email, username: savedUser.username })
     } catch (error) {
-      response.badRequest(error.messages)
+      response.badRequest(error)
     }
   }
 
@@ -95,7 +93,7 @@ export default class UsersController {
       // Return the updated user
       return await Users.findById(request.param('id')).exec()
     } catch (error) {
-      response.badRequest(error.messages)
+      response.badRequest(error)
     }
   }
 
@@ -107,7 +105,7 @@ export default class UsersController {
 
       return response.noContent()
     } catch (error) {
-      response.badRequest(error.messages)
+      response.badRequest(error)
     }
   }
 
@@ -146,7 +144,7 @@ export default class UsersController {
         ),
       })
     } catch (error) {
-      response.badRequest(error.messages)
+      response.badRequest(error)
     }
   }
 
@@ -155,7 +153,7 @@ export default class UsersController {
     try {
       return response.noContent()
     } catch (error) {
-      response.badRequest(error.messages)
+      response.badRequest(error)
     }
   }
 }
