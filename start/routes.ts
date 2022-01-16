@@ -25,15 +25,18 @@ Route.get('/', async () => {
   return { hello: 'world' }
 })
 
+Route.post('login', 'UsersController.login').prefix('/api')
+Route.post('user', 'UsersController.register').prefix('/api')
+
 Route.group(() => {
   Route.get('user', 'UsersController.index')
-  Route.post('login', 'UsersController.login')
-  Route.post('user', 'UsersController.register')
   Route.put('user/:id', 'UsersController.update')
   Route.get('user/:id', 'UsersController.getByID')
   Route.delete('user/:id', 'UsersController.delete')
-  Route.get('statistics', 'UsersController.getStatistics').middleware('auth')
-}).prefix('/api')
+  Route.get('statistics', 'UsersController.getStatistics')
+})
+  .middleware('auth')
+  .prefix('/api')
 
 Route.group(() => {
   Route.get('play', 'QuizzesController.play')

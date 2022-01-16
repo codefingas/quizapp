@@ -6,9 +6,19 @@ import Types from 'App/Models/Mongoose/Types'
 import User from 'App/Models/Mongoose/User'
 import Quiz from 'App/Models/Mongoose/Quiz'
 import Scoring from 'App/Models/Mongoose/Scoring'
+import mongoose from 'mongoose'
 
 // test models to validate the integrity of the data
-test.group('Models Integrity', () => {
+test.group('Models Integrity', (group) => {
+  // Clean up the database after all test
+  group.after(async () => {
+    const collections = await mongoose.connection.db.collections()
+
+    for (let collection of collections) {
+      await collection.deleteMany({})
+    }
+  })
+
   // Test Categories Model
   test('ensure valid categories can be created', async (assert) => {
     const category = new Categories()
