@@ -27,45 +27,20 @@ export default class UsersController {
   public async getStatistics({ request, response }: HttpContextContract) {
     let userId = request.user._id
 
-    // Get the user's statistics
-    let statistics = await Scores.aggregate([
-      {
-        $match: {
-          user_id: userId,
-        },
-      },
-      {
-        $group: {
-          _id: '$quiz_id',
-          correct: { $sum: { $cond: ['$correct', 1, 0] } },
-          incorrect: { $sum: { $cond: ['$correct', 0, 1] } },
-        },
-      },
-      {
-        $lookup: {
-          from: 'quizzes',
-          localField: '_id',
-          foreignField: '_id',
-          as: 'quiz',
-        },
-      },
-      {
-        $unwind: '$quiz',
-      },
-      {
-        $project: {
-          _id: 0,
-          quiz_id: '$_id',
-          quiz_name: '$quiz.name',
-          correct: '$correct',
-          incorrect: '$incorrect',
-        },
-      },
-    ])
+    // Get all user records from the scoring table ordered by date
+    let userScores = await Scores.find({ created_by: userId }).sort({ created_at: -1 }).exec()
 
-    console.log(statistics)
-    // Return the statistics
-    return response.json(statistics)
+    // Select total, score for each user record order by date
+    let userScoresTotal = userScores.map((score) => {
+      return {
+        total: score.total,
+        score: score.score,
+        created_at: score.created_at,
+      }
+    })
+
+    // Return the user scores
+    return response.json(userScoresTotal)
   }
 
   // Get a specific user

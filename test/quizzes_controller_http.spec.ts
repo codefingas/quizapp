@@ -106,6 +106,18 @@ test.group('Quiz Routes', () => {
     assert.hasAnyKeys(response.body, ['score', 'total', 'attempted_on', 'breakdown'])
   })
 
+  // Test user statics route return user score board
+  test('GET /api/statistics', async (assert) => {
+    const response = await supertest(BASE_URL)
+      .get('/api/statistics/')
+      .set('Authorization', `Bearer ${guestUser.token}`)
+      .expect('Content-Type', /json/)
+      .expect(200)
+
+    assert.isArray(response.body)
+    assert.hasAnyKeys(response.body[0], ['total', 'score', 'created_at'])
+  })
+
   // Access Denied when Token is not supplied for quiz creation
   test('POST /api/quiz', async (assert) => {
     const response = await supertest(BASE_URL)
