@@ -9,3 +9,8 @@ Limitations:
 4. JWT logout is not the best implementation and might be open to hackers.
 4. All POST request can only handle 1 record at a time for now.
 5. Error message is not optimal and can be way better than what is currrently implemented.
+
+TODO:
+1. Categorize the quiz i.e { Sports, History, Politics, Art, War, Movies, General Knowledge}
+2. Set the difficulty level of each quiz i.e {Easy, Medium, Hard}
+3. Set the Type of the quiz i.e {Multiple Choice, True / False }

@@ -25,8 +25,6 @@ Route.get('/', async () => {
   return { hello: 'world' }
 })
 
-// Route.resource('quiz', 'QuizzesController.index').middleware('auth')
-
 Route.group(() => {
   Route.get('user', 'UsersController.index')
   Route.post('login', 'UsersController.login')
@@ -34,6 +32,7 @@ Route.group(() => {
   Route.put('user/:id', 'UsersController.update')
   Route.get('user/:id', 'UsersController.getByID')
   Route.delete('user/:id', 'UsersController.delete')
+  Route.get('statistics', 'UsersController.getStatistics').middleware('auth')
 }).prefix('/api')
 
 Route.group(() => {

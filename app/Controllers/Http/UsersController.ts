@@ -7,6 +7,7 @@ import Hash from '@ioc:Adonis/Core/Hash'
 import jwt from 'jsonwebtoken'
 import Users from 'App/Models/Mongoose/User'
 import Utilities from 'App/Helpers/Utilities'
+import Scores from 'App/Models/Mongoose/Scoring'
 
 export default class UsersController {
   // Get all users
@@ -22,6 +23,51 @@ export default class UsersController {
     }
 
     return await users
+  }
+
+  // Allow user to be able to view statistics on quizzes attempted so far.
+  public async getStatistics({ request, response }: HttpContextContract) {
+    let userId = request.user._id
+
+    // Get the user's statistics
+    let statistics = await Scores.aggregate([
+      {
+        $match: {
+          user_id: userId,
+        },
+      },
+      {
+        $group: {
+          _id: '$quiz_id',
+          correct: { $sum: { $cond: ['$correct', 1, 0] } },
+          incorrect: { $sum: { $cond: ['$correct', 0, 1] } },
+        },
+      },
+      {
+        $lookup: {
+          from: 'quizzes',
+          localField: '_id',
+          foreignField: '_id',
+          as: 'quiz',
+        },
+      },
+      {
+        $unwind: '$quiz',
+      },
+      {
+        $project: {
+          _id: 0,
+          quiz_id: '$_id',
+          quiz_name: '$quiz.name',
+          correct: '$correct',
+          incorrect: '$incorrect',
+        },
+      },
+    ])
+
+    console.log(statistics)
+    // Return the statistics
+    return response.json(statistics)
   }
 
   // Get a specific user

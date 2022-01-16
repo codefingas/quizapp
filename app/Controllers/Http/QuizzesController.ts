@@ -17,6 +17,7 @@ export default class QuizzesController {
     }
   }
 
+  //
   // Score and save the quiz result in the database
   public async score({ request, response }: HttpContextContract) {
     try {
