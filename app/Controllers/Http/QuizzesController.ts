@@ -13,11 +13,10 @@ export default class QuizzesController {
 
       return response.json(questions)
     } catch (error) {
-      response.badRequest(error)
+      return response.badRequest(error)
     }
   }
 
-  //
   // Score and save the quiz result in the database
   public async score({ request, response }: HttpContextContract) {
     try {
@@ -67,14 +66,14 @@ export default class QuizzesController {
       })
       await score.save()
 
-      response.status(201).json({
+      return response.status(201).json({
         score: correct,
         total: scoring.length,
         attempted_on: new Utilities().currentDate(),
         breakdown: scoring,
       })
     } catch (error) {
-      response.badRequest(error)
+      return response.badRequest(error)
     }
   }
 
@@ -101,7 +100,7 @@ export default class QuizzesController {
       // Return the specific quiz with the given `id`, or `null` if not found
       return await Quizzes.findOne(query).exec()
     } catch (error) {
-      response.badRequest(error)
+      return response.badRequest(error)
     }
   }
 
@@ -128,7 +127,7 @@ export default class QuizzesController {
       // Save the quiz
       const savedQuiz = await quiz.save()
 
-      response.status(201).json({
+      return response.status(201).json({
         id: savedQuiz.id,
         question: savedQuiz.question,
         correct_answer: savedQuiz.correct_answer,
@@ -151,15 +150,17 @@ export default class QuizzesController {
       const query = { created_by: request.user._id, _id: request.param('id') }
 
       // Update the quiz
-      return await Quizzes.findOneAndUpdate(query, {
+      const updated = await Quizzes.findOneAndUpdate(query, {
         question: request.input('question'),
         correct_answer: request.input('correct_answer'),
         incorrect_answers: request.input('incorrect_answers'),
         created_by: request.user._id,
         updated_at: new Utilities().currentDate(),
       }).exec()
+
+      return response.status(200).json(updated)
     } catch (error) {
-      response.badRequest(error)
+      return response.badRequest(error)
     }
   }
 
@@ -184,7 +185,7 @@ export default class QuizzesController {
 
       return response.noContent()
     } catch (error) {
-      response.badRequest(error)
+      return response.badRequest(error)
     }
   }
 }

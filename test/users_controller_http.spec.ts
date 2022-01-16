@@ -423,11 +423,11 @@ test.group('Authenticated Routes', () => {
     assert.equal(response.body.message, 'E_ROUTE_NOT_FOUND: Cannot DELETE:/api/user')
   })
 
-  // Return 204 when deleting a user {CAnnot delete actively logged in user}
+  // Return 204 when deleting a user {Cannot delete actively logged in user}
   test('DELETE /api/user', async (assert) => {
     const response = await supertest(BASE_URL)
       .delete('/api/user/' + adminUser._id)
-      .set('Authorization', `Bearer fake_${adminUser.token}`)
+      .set('Authorization', `Bearer _${adminUser.token}`)
       .expect('Content-Type', /json/)
       .expect(400)
 

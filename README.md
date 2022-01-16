@@ -20,3 +20,6 @@ TESTING:
 1. From the command line run the following command to run the test
 node -r @adonisjs/assembler/build/register japaFile.ts or npm run test.
 2. You can also configure a separate database for testing by creating .env.testing file in the project root and overwriting the necessary environment variables.
+
+Bugs:
+1. Quiz updating

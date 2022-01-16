@@ -109,7 +109,7 @@ export default class UsersController {
       // Save the user
       const savedUser = await user.save()
 
-      response
+      return response
         .status(201)
         .json({ id: savedUser.id, email: savedUser.email, username: savedUser.username })
     } catch (error) {
@@ -187,15 +187,6 @@ export default class UsersController {
           process.env.SECRET
         ),
       })
-    } catch (error) {
-      response.badRequest(error)
-    }
-  }
-
-  // Logout a user
-  public async logout({ request, response }: HttpContextContract) {
-    try {
-      return response.noContent()
     } catch (error) {
       response.badRequest(error)
     }
