@@ -1,6 +1,4 @@
 'use strict'
-import dotenv from 'dotenv'
-dotenv.config()
 
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Hash from '@ioc:Adonis/Core/Hash'

@@ -14,3 +14,9 @@ TODO:
 1. Categorize the quiz i.e { Sports, History, Politics, Art, War, Movies, General Knowledge}
 2. Set the difficulty level of each quiz i.e {Easy, Medium, Hard}
 3. Set the Type of the quiz i.e {Multiple Choice, True / False }
+
+
+TESTING:
+1. From the command line run the following command to run the test
+node -r @adonisjs/assembler/build/register japaFile.ts or npm run test.
+2. You can also configure a separate database for testing by creating .env.testing file in the project root and overwriting the necessary environment variables.
